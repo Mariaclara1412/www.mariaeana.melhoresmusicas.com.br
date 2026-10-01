@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeBordô - Músicas, Playlists & Jogos de Recomendação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bordo: {
+                            50: '#fdf2f4',
+                            100: '#fbe5e8',
+                            200: '#f7cfd5',
+                            300: '#f0aab5',
+                            400: '#e5778a',
+                            500: '#d54963',
+                            600: '#bd2b48',
+                            700: '#9e1f37',
+                            800: '#841d32',
+                            900: '#4A0E17', /* Main Burgundy */
+                            950: '#2D080D', /* Dark Maroon */
+                        },
+                        babyblue: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe', /* Soft Baby Blue */
+                            200: '#bae6fd', /* Bright Baby Blue */
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 15px rgba(186, 230, 253, 0.3)' },
+                            '100%': { boxShadow: '0 0 30px rgba(186, 230, 253, 0.7)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #1a080d;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2D080D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4A0E17;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bae6fd;
+        }
+
+        .glass-panel {
+            background: rgba(74, 14, 23, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(186, 230, 253, 0.15);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(74, 14, 23, 0.6) 0%, rgba(45, 8, 13, 0.8) 100%);
+            border: 1px solid rgba(186, 230, 253, 0.18);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(186, 230, 253, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -10px rgba(186, 230, 253, 0.25);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #bae6fd 0%, #e0f2fe 50%, #f7cfd5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-bordo-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #bae6fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-babyblue {
+            background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%);
+            color: #2D080D;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .btn-babyblue:hover {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            box-shadow: 0 0 20px rgba(186, 230, 253, 0.5);
+            transform: scale(1.02);
+        }
+
+        .btn-bordo {
+            background: linear-gradient(135deg, #6B1224 0%, #4A0E17 100%);
+            color: #bae6fd;
+            border: 1px solid rgba(186, 230, 253, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-bordo:hover {
+            background: linear-gradient(135deg, #841d32 0%, #6B1224 100%);
+            border-color: #bae6fd;
+            box-shadow: 0 0 15px rgba(74, 14, 23, 0.6);
+        }
+
+        /* Equalizer bar animation */
+        .eq-bar {
+            animation: bounce 1.2s ease-in-out infinite alternate;
+        }
+        @keyframes bounce {
+            0% { height: 4px; }
+            100% { height: 22px; }
+        }
+        .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-babyblue-200 selection:text-bordo-950 pb-32">
+
+    <!-- TOP NAVIGATION -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-babyblue-200/10 px-4 lg:px-8 py-3 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            <!-- Logo -->
+            <a href="#" onclick="showSection('discover')" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-bordo-900 to-bordo-600 border border-babyblue-200/40 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fa-solid font-bold fa-compact-disc text-babyblue-200 text-xl animate-spin-slow"></i>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-2xl tracking-tight text-gradient">VibeBordô</span>
+                    <span class="text-[10px] block font-semibold text-babyblue-200/70 uppercase tracking-widest -mt-1">Música & Alquimia</span>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-6">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-babyblue-200/50"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Buscar música, artista ou vibe..." 
+                           class="w-full bg-bordo-950/80 border border-babyblue-200/20 text-babyblue-100 pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:border-babyblue-200 transition-colors placeholder:text-babyblue-200/40">
+                </div>
+            </div>
+
+            <!-- Main Nav Items -->
+            <nav class="hidden lg:flex items-center gap-1 font-medium text-sm">
+                <button onclick="showSection('discover')" id="nav-discover" class="px-4 py-2 rounded-full text-babyblue-100 hover:text-white hover:bg-bordo-900/60 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-babyblue-300"></i> Descobrir
+                </button>
+                <button onclick="showSection('playlists')" id="nav-playlists" class="px-4 py-2 rounded-full text-babyblue-200/70 hover:text-white hover:bg-bordo-900/60 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-babyblue-300"></i> Playlists
+                </button>
+                <button onclick="showSection('game')" id="nav-game" class="px-4 py-2 rounded-full text-babyblue-200 font-bold bg-bordo-800/80 border border-babyblue-200/30 hover:bg-bordo-700 transition-all flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles text-babyblue-200 animate-pulse"></i> O Jogo Vibe
+                </button>
+                <button onclick="showSection('library')" id="nav-library" class="px-4 py-2 rounded-full text-babyblue-200/70 hover:text-white hover:bg-bordo-900/60 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-bordo-400"></i> Minhas Favoritas
+                </button>
+            </nav>
+
+            <!-- User Profile / Quick Stats -->
+            <div class="flex items-center gap-3">
+                <button onclick="showSection('game')" class="lg:hidden p-2 rounded-xl bg-bordo-900 border border-babyblue-200/30 text-babyblue-200">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <div class="flex items-center gap-2 pl-2 border-l border-babyblue-200/10">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-babyblue-200 to-babyblue-400 p-[2px] shadow-md">
+                        <div class="w-full h-full bg-bordo-950 rounded-full flex items-center justify-center font-bold text-xs text-babyblue-200">
+                            VB
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="md:hidden mt-2 pt-2 border-t border-babyblue-200/10">
+            <input type="text" oninput="handleSearch(this.value)" placeholder="Buscar no VibeBordô..." 
+                   class="w-full bg-bordo-950/80 border border-babyblue-200/20 text-babyblue-100 px-4 py-1.5 rounded-full text-xs focus:outline-none focus:border-babyblue-200">
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 flex-1 w-full">
+
+        <!-- SECTION 1: DISCOVER (DEFAULT VIEW) -->
+        <section id="section-discover" class="space-y-10">
+            
+            <!-- Hero Banner -->
+            <div class="relative rounded-3xl overflow-hidden glass-card p-6 md:p-10 border border-babyblue-200/20 flex flex-col md:flex-row items-center justify-between gap-8 bg-gradient-to-r from-bordo-950 via-bordo-900 to-bordo-950">
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-babyblue-300/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-bordo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-xl space-y-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-babyblue-100 text-bordo-950 uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-fire text-bordo-700"></i> Experiência Sonora & Estética
+                    </span>
+                    <h1 class="font-display text-3xl md:text-5xl font-extrabold leading-tight text-gradient">
+                        Sua vibe em tons de <span class="text-babyblue-200">Azul Bebê</span> & <span class="text-bordo-400">Bordô</span>.
+                    </h1>
+                    <p class="text-babyblue-100/80 text-sm md:text-base leading-relaxed">
+                        Descubra harmonias envolventes, crie playlists alinhadas ao seu estado de espírito e jogue o nosso Quiz Interativo para mapear sua identidade sonora.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <button onclick="showSection('game')" class="btn-babyblue px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg text-sm font-bold">
+                            <i class="fa-solid fa-gamepad"></i> Jogar Match Musical
+                        </button>
+                        <button onclick="playRandomFeatured()" class="btn-bordo px-5 py-3 rounded-xl flex items-center gap-2 text-sm font-semibold">
+                            <i class="fa-solid fa-shuffle"></i> Tocar Vibe Aleatória
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Vinyl Graphic -->
+                <div class="relative z-10 flex flex-col items-center justify-center">
+                    <div id="heroVinyl" class="w-48 h-48 md:w-56 md:h-56 rounded-full bg-gradient-to-tr from-bordo-950 via-neutral-900 to-bordo-900 p-3 shadow-2xl border-2 border-babyblue-200/30 relative flex items-center justify-center animate-float">
+                        <div class="w-full h-full rounded-full border border-neutral-700/50 flex items-center justify-center relative">
+                            <!-- Grooves -->
+                            <div class="w-4/5 h-4/5 rounded-full border border-neutral-800 flex items-center justify-center">
+                                <div class="w-3/5 h-3/5 rounded-full border border-neutral-700/60 flex items-center justify-center">
+                                    <!-- Center Label -->
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-babyblue-200 to-bordo-800 border-2 border-babyblue-100 flex items-center justify-center text-center p-2 shadow-inner">
+                                        <i class="fa-solid fa-music text-bordo-950 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Filter Pills -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-display text-2xl font-bold text-babyblue-100 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-babyblue-200"></i> Explorar por Gênero & Mood
+                    </h2>
+                    <span class="text-xs text-babyblue-200/60 font-medium" id="songCountDisplay">Carregando faixas...</span>
+                </div>
+
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="genreFilters">
+                    <!-- Dynamic Filters injected by JS -->
+                </div>
+            </div>
+
+            <!-- Trending Songs Grid -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-display text-xl font-bold text-gradient">Músicas em Destaque</h3>
+                    <button onclick="playAllFiltered()" class="text-xs text-babyblue-200 hover:underline font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-play"></i> Tocar Todas
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="songGrid">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+
+            <!-- Curated Vibe Playlists Banner Section -->
+            <div class="space-y-4 pt-4">
+                <h3 class="font-display text-xl font-bold text-gradient flex items-center gap-2">
+                    <i class="fa-solid fa-record-vinyl text-bordo-400"></i> Playlists Especiais VibeBordô
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="curatedPlaylistsHome">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECTION 2: PLAYLISTS VIEW -->
+        <section id="section-playlists" class="hidden space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-babyblue-200/10">
+                <div>
+                    <h1 class="font-display text-3xl font-extrabold text-gradient">Playlists Selecionadas</h1>
+                    <p class="text-babyblue-100/70 text-sm">Coleções cuidadosamente afinadas entre tons relaxantes de azul e a intensidade do bordô.</p>
+                </div>
+                <button onclick="openCreatePlaylistModal()" class="btn-babyblue px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 self-start md:self-auto">
+                    <i class="fa-solid fa-plus"></i> Criar Nova Playlist
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="allPlaylistsGrid">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: O JOGO VIBE - MUSICAL MATCH & RECOMMENDATIONS -->
+        <section id="section-game" class="hidden space-y-8">
+            
+            <div class="glass-card p-6 md:p-10 rounded-3xl border border-babyblue-200/30 bg-gradient-to-b from-bordo-900/90 to-bordo-950/95 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-10 text-babyblue-100 pointer-events-none">
+                    <i class="fa-solid fa-wand-magic-sparkles text-9xl"></i>
+                </div>
+
+                <!-- Game Header -->
+                <div class="max-w-2xl space-y-3 mb-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-babyblue-100 text-bordo-950 font-bold text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-gamepad"></i> Quiz & Alquimia Sonora
+                    </div>
+                    <h1 class="font-display text-3xl md:text-4xl font-extrabold text-gradient">Qual é a sua Harmonia Secreta?</h1>
+                    <p class="text-babyblue-100/80 text-sm">
+                        Responda às 4 perguntas do nosso oráculo musical. Nosso algoritmo combinará sua estética visual, ritmo interior e ambiente ideal para gerar recomendações sob medida!
+                    </p>
+                </div>
+
+                <!-- GAME CONTAINER WIZARD -->
+                <div id="gameWizard" class="space-y-8">
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-bordo-950 rounded-full h-2.5 p-0.5 border border-babyblue-200/20">
+                        <div id="gameProgressBar" class="bg-gradient-to-r from-bordo-500 to-babyblue-200 h-full rounded-full transition-all duration-500 w-1/4"></div>
+                    </div>
+
+                    <!-- Step Title -->
+                    <div id="gameStepTitle" class="text-xl font-bold text-babyblue-100">
+                        Passo 1: Qual paleta de sensações mais combina com você hoje?
+                    </div>
+
+                    <!-- Step Options Grid -->
+                    <div id="gameOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Options generated dynamically by JS -->
+                    </div>
+
+                    <!-- Game Control Buttons -->
+                    <div class="flex items-center justify-between pt-4 border-t border-babyblue-200/10">
+                        <button id="gamePrevBtn" onclick="gamePreviousStep()" class="px-4 py-2 rounded-xl text-babyblue-200/60 hover:text-babyblue-100 text-sm font-semibold disabled:opacity-30 disabled:pointer-events-none">
+                            <i class="fa-solid fa-arrow-left mr-1"></i> Anterior
+                        </button>
+                        <span id="gameStepIndicator" class="text-xs text-babyblue-200/50 font-semibold">Passo 1 de 4</span>
+                    </div>
+                </div>
+
+                <!-- GAME RESULT CONTAINER (HIDDEN INITIALLY) -->
+                <div id="gameResultContainer" class="hidden space-y-8">
+                    <div class="p-6 rounded-2xl bg-bordo-950/80 border border-babyblue-200/40 space-y-6 text-center md:text-left flex flex-col md:flex-row items-center gap-6">
+                        <div class="w-28 h-28 rounded-2xl bg-gradient-to-tr from-bordo-600 to-babyblue-200 p-1 flex-shrink-0 shadow-xl">
+                            <div class="w-full h-full bg-bordo-950 rounded-xl flex flex-col items-center justify-center p-2 text-center">
+                                <i id="resultIcon" class="fa-solid fa-gem text-babyblue-200 text-3xl mb-1"></i>
+                                <span id="resultMatchPercent" class="font-display text-xs font-black text-babyblue-200">98% MATCH</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 flex-1">
+                            <span class="text-xs font-bold text-babyblue-200 uppercase tracking-widest">Sua Arquetipologia Sonora</span>
+                            <h2 id="resultTitle" class="font-display text-2xl md:text-3xl font-extrabold text-gradient">Sonhador Neon Bordô</h2>
+                            <p id="resultDescription" class="text-babyblue-100/80 text-sm leading-relaxed">
+                                Você aprecia melodias introspectivas combinadas com batidas suaves de lo-fi e sintetizadores acolhedores. Seu gosto musical une nostalgia, poesia e foco criativo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Tracks Section -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display text-lg font-bold text-babyblue-100 flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic text-babyblue-200"></i> Suas Músicas Recomendadas
+                            </h3>
+                            <button onclick="playAllGameRecommendations()" class="btn-babyblue text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-play"></i> Tocar Playlist Recomendada
+                            </button>
+                        </div>
+
+                        <div id="gameRecommendedList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- Recommended tracks injected here -->
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-babyblue-200/10">
+                        <button onclick="resetGame()" class="btn-bordo px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Refazer o Quiz
+                        </button>
+                        <button onclick="saveGamePlaylist()" class="btn-babyblue px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-bookmark"></i> Salvar como Playlist no Perfil
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- EXTRA MINI GAME: GUESS THE HARMONY / EAR TRAINING ARCADE -->
+            <div class="glass-card p-6 rounded-3xl border border-babyblue-200/20 bg-bordo-950/60 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[11px] font-bold text-babyblue-200 uppercase tracking-widest">Mini-Game de Ritmo e Ouvido</span>
+                        <h3 class="font-display text-xl font-bold text-gradient">Adivinhe o Acorde da Vibe</h3>
+                        <p class="text-xs text-babyblue-100/70">Ouça o som gerado e identifique se o tom é Melancólico (Bordô), Relaxante (Azul Bebê) ou Energético!</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="px-3 py-1.5 rounded-xl bg-bordo-900 border border-babyblue-200/20 text-xs font-bold text-babyblue-200">
+                            Pontos: <span id="arcadeScore" class="text-white">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-4 py-4 bg-bordo-900/50 rounded-2xl border border-babyblue-200/10">
+                    <button onclick="playArcadeChord()" class="btn-babyblue px-6 py-3 rounded-full text-xs font-extrabold flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-volume-high text-lg"></i> Tocar Acorde Misterioso
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="arcadeButtonsContainer">
+                    <button onclick="guessArcade('suave')" class="p-3 rounded-xl bg-bordo-900/80 hover:bg-babyblue-200 hover:text-bordo-950 border border-babyblue-200/20 font-bold text-xs text-babyblue-100 transition-all">
+                        🌊 Azul Bebê (Suave / Relax)
+                    </button>
+                    <button onclick="guessArcade('intenso')" class="p-3 rounded-xl bg-bordo-900/80 hover:bg-bordo-600 hover:text-white border border-babyblue-200/20 font-bold text-xs text-babyblue-100 transition-all">
+                        🍷 Bordô Profundo (Intenso / Jazz)
+                    </button>
+                    <button onclick="guessArcade('pop')" class="p-3 rounded-xl bg-bordo-900/80 hover:bg-babyblue-300 hover:text-bordo-950 border border-babyblue-200/20 font-bold text-xs text-babyblue-100 transition-all">
+                        ⚡ Pop Neon (Energético)
+                    </button>
+                </div>
+                <div id="arcadeFeedback" class="text-center text-xs font-bold min-h-[20px] text-babyblue-200"></div>
+            </div>
+
+        </section>
+
+        <!-- SECTION 4: LIBRARY & FAVORITES -->
+        <section id="section-library" class="hidden space-y-8">
+            <div class="pb-4 border-b border-babyblue-200/10">
+                <h1 class="font-display text-3xl font-extrabold text-gradient">Sua Biblioteca Pessoal</h1>
+                <p class="text-babyblue-100/70 text-sm">Músicas favoritadas e playlists salvas no seu perfil.</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex items-center gap-3 border-b border-babyblue-200/10 pb-2">
+                <button onclick="switchLibTab('favs')" id="tab-btn-favs" class="px-4 py-2 rounded-xl bg-babyblue-100 text-bordo-950 font-bold text-xs shadow-md">
+                    Músicas Favoritas (<span id="favCount">0</span>)
+                </button>
+                <button onclick="switchLibTab('customPlaylists')" id="tab-btn-customPlaylists" class="px-4 py-2 rounded-xl text-babyblue-200/70 hover:text-white font-bold text-xs">
+                    Minhas Playlists Salvas
+                </button>
+            </div>
+
+            <!-- Tab Content: Favorites -->
+            <div id="libTabFavs" class="space-y-4">
+                <div id="favoritesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Favorite songs injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Custom Playlists -->
+            <div id="libTabPlaylists" class="hidden space-y-4">
+                <div id="userCustomPlaylistsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- User saved playlists -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM PERSISTENT AUDIO PLAYER -->
+    <footer class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-babyblue-200/20 px-4 py-3 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            
+            <!-- Currently Playing Track Info -->
+            <div class="flex items-center gap-3 w-full md:w-1/4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-bordo-800 to-babyblue-300 p-[1px] relative flex-shrink-0 shadow-md">
+                    <div id="playerCover" class="w-full h-full bg-bordo-950 rounded-[11px] flex items-center justify-center text-babyblue-200 font-bold text-lg overflow-hidden">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                </div>
+                <div class="truncate flex-1">
+                    <h4 id="playerTitle" class="font-bold text-sm text-babyblue-100 truncate">Nenhuma música selecionada</h4>
+                    <p id="playerArtist" class="text-xs text-babyblue-200/60 truncate">Escolha uma faixa no VibeBordô</p>
+                </div>
+                <button id="playerFavBtn" onclick="toggleCurrentFavorite()" class="text-babyblue-200/40 hover:text-bordo-400 text-base transition-colors px-1">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Player Controls & Timeline -->
+            <div class="flex flex-col items-center gap-1.5 w-full md:w-2/4">
+                
+                <!-- Buttons -->
+                <div class="flex items-center gap-5">
+                    <button onclick="toggleShuffle()" id="shuffleBtn" class="text-babyblue-200/50 hover:text-babyblue-200 text-xs transition-colors" title="Modo Aleatório">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                    <button onclick="playPrevTrack()" class="text-babyblue-100 hover:text-white text-sm transition-colors">
+                        <i class="fa-solid fa-backward-step"></i>
+                    </button>
+                    <button onclick="togglePlayPause()" id="mainPlayBtn" class="w-10 h-10 rounded-full btn-babyblue flex items-center justify-center text-bordo-950 shadow-lg text-sm">
+                        <i class="fa-solid fa-play ml-0.5"></i>
+                    </button>
+                    <button onclick="playNextTrack()" class="text-babyblue-100 hover:text-white text-sm transition-colors">
+                        <i class="fa-solid fa-forward-step"></i>
+                    </button>
+                    <button onclick="toggleLoop()" id="loopBtn" class="text-babyblue-200/50 hover:text-babyblue-200 text-xs transition-colors" title="Repetir">
+                        <i class="fa-solid fa-repeat"></i>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="flex items-center gap-3 w-full max-w-md">
+                    <span id="currentTimeDisplay" class="text-[10px] text-babyblue-200/60 font-mono w-8 text-right">0:00</span>
+                    <div class="relative flex-1 group cursor-pointer" onclick="seekAudio(event)">
+                        <div class="w-full bg-bordo-950/80 h-1.5 rounded-full overflow-hidden border border-babyblue-200/10">
+                            <div id="playerProgressBar" class="bg-gradient-to-r from-bordo-400 to-babyblue-200 h-full w-0 rounded-full transition-all duration-100"></div>
+                        </div>
+                    </div>
+                    <span id="durationDisplay" class="text-[10px] text-babyblue-200/60 font-mono w-8">0:00</span>
+                </div>
+            </div>
+
+            <!-- Visualizer Canvas & Volume Control -->
+            <div class="hidden md:flex items-center justify-end gap-4 w-full md:w-1/4">
+                
+                <!-- Equalizer Animation / Canvas -->
+                <canvas id="visualizerCanvas" width="70" height="24" class="rounded bg-bordo-950/40 border border-babyblue-200/10"></canvas>
+
+                <!-- Volume -->
+                <div class="flex items-center gap-2">
+                    <i id="volumeIcon" class="fa-solid fa-volume-high text-xs text-babyblue-200/70"></i>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" oninput="changeVolume(this.value)" 
+                           class="w-20 accent-babyblue-200 h-1 bg-bordo-950 rounded-lg cursor-pointer">
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- CREATE PLAYLIST MODAL -->
+    <div id="createPlaylistModal" class="fixed inset-0 z-50 bg-bordo-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-babyblue-200/30 space-y-4">
+            <div class="flex items-center justify-between border-b border-babyblue-200/10 pb-3">
+                <h3 class="font-display font-bold text-lg text-gradient">Criar Nova Playlist</h3>
+                <button onclick="closeCreatePlaylistModal()" class="text-babyblue-200/60 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-babyblue-200 block mb-1">Nome da Playlist</label>
+                    <input type="text" id="newPlaylistName" placeholder="Ex: Madrugadas em Azul Bebê" class="w-full bg-bordo-950 border border-babyblue-200/20 rounded-xl px-3 py-2 text-sm text-babyblue-100 focus:outline-none focus:border-babyblue-200">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-babyblue-200 block mb-1">Descrição / Vibe</label>
+                    <textarea id="newPlaylistDesc" rows="2" placeholder="Descreva o clima dessas músicas..." class="w-full bg-bordo-950 border border-babyblue-200/20 rounded-xl px-3 py-2 text-sm text-babyblue-100 focus:outline-none focus:border-babyblue-200"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeCreatePlaylistModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-babyblue-200/70 hover:text-white">Cancelar</button>
+                <button onclick="saveNewPlaylist()" class="btn-babyblue px-5 py-2 rounded-xl text-xs font-bold">Criar Playlist</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed top-20 right-4 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-panel px-4 py-3 rounded-2xl border border-babyblue-200/40 shadow-xl flex items-center gap-3">
+            <div id="toastIcon" class="w-8 h-8 rounded-full bg-babyblue-200 text-bordo-950 flex items-center justify-center font-bold text-sm">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <span id="toastMessage" class="text-xs font-semibold text-babyblue-100">Ação realizada com sucesso!</span>
+        </div>
+    </div>
+
+    <script>
+        // APP DATABASE
+        const SONGS_DATABASE = [
+            {
+                id: '1',
+                title: 'Nuvens de Algodão Bebê',
+                artist: 'Luna Azul & O Quarteto',
+                genre: 'Indie / Lo-Fi',
+                duration: 184, // seconds
+                vibe: 'suave',
+                bpm: 72,
+                coverBg: 'from-babyblue-300 to-bordo-800',
+                noteFreqs: [261.63, 329.63, 392.00, 493.88] // C maj 7 vibe
+            },
+            {
+                id: '2',
+                title: 'Bordô à Meia-Noite',
+                artist: 'Sexteto Vinho',
+                genre: 'Jazz Contemporâneo',
+                duration: 215,
+                vibe: 'intenso',
+                bpm: 85,
+                coverBg: 'from-bordo-900 to-bordo-600',
+                noteFreqs: [220.00, 261.63, 311.13, 392.00] // A min 7 b5 vibe
+            },
+            {
+                id: '3',
+                title: 'Café na Sacada',
+                artist: 'Bossa & Brisa',
+                genre: 'MPB / Bossa Nova',
+                duration: 168,
+                vibe: 'suave',
+                bpm: 90,
+                coverBg: 'from-babyblue-200 via-bordo-700 to-bordo-900',
+                noteFreqs: [293.66, 369.99, 440.00, 523.25] // D maj 7
+            },
+            {
+                id: '4',
+                title: 'Sintetizador Neon Azul',
+                artist: 'ElectroVibe',
+                genre: 'Synthwave / Pop',
+                duration: 198,
+                vibe: 'pop',
+                bpm: 120,
+                coverBg: 'from-babyblue-400 to-babyblue-800',
+                noteFreqs: [174.61, 220.00, 261.63, 329.63] // F maj 7
+            },
+            {
+                id: '5',
+                title: 'Chuva de Outono em SP',
+                artist: 'Garota do Lo-Fi',
+                genre: 'Indie / Lo-Fi',
+                duration: 152,
+                vibe: 'suave',
+                bpm: 68,
+                coverBg: 'from-bordo-800 to-babyblue-200',
+                noteFreqs: [196.00, 246.94, 293.66, 349.23] // G7
+            },
+            {
+                id: '6',
+                title: 'Veludo & Vinho',
+                artist: 'Orquestra Urbana',
+                genre: 'Jazz Contemporâneo',
+                duration: 240,
+                vibe: 'intenso',
+                bpm: 78,
+                coverBg: 'from-bordo-950 to-bordo-700',
+                noteFreqs: [220.00, 277.18, 329.63, 415.30] // A maj 7
+            },
+            {
+                id: '7',
+                title: 'Brisa Marinha',
+                artist: 'Mar & Céu',
+                genre: 'MPB / Bossa Nova',
+                duration: 180,
+                vibe: 'suave',
+                bpm: 96,
+                coverBg: 'from-babyblue-100 to-bordo-900',
+                noteFreqs: [261.63, 329.63, 392.00, 523.25]
+            },
+            {
+                id: '8',
+                title: 'Aceleração Noturna',
+                artist: 'Cyber Pulse',
+                genre: 'Synthwave / Pop',
+                duration: 210,
+                vibe: 'pop',
+                bpm: 128,
+                coverBg: 'from-babyblue-300 via-bordo-600 to-bordo-950',
+                noteFreqs: [146.83, 174.61, 220.00, 261.63]
+            }
+        ];
+
+        // CURATED PLAYLISTS
+        const CURATED_PLAYLISTS = [
+            {
+                id: 'p1',
+                title: 'Vibe Azul Bebê: Foco & Suavidade',
+                desc: 'Melodias leves e beats lo-fi para acalmar a mente e concentrar.',
+                songsCount: 14,
+                gradient: 'from-babyblue-200/30 via-bordo-900 to-bordo-950',
+                genreFilter: 'Indie / Lo-Fi',
+                icon: 'fa-cloud'
+            },
+            {
+                id: 'p2',
+                title: 'Bordô Intenso: Jazz & Vinho',
+                desc: 'Acordes sofisticados para noites de inspiração e conversa boa.',
+                songsCount: 18,
+                gradient: 'from-bordo-800 via-bordo-900 to-bordo-950',
+                genreFilter: 'Jazz Contemporâneo',
+                icon: 'fa-wine-glass'
+            },
+            {
+                id: 'p3',
+                title: 'Bossa & Poesia ao Pôr do Sol',
+                desc: 'O calor da MPB harmonizado com a elegância do Bordô e Azul.',
+                songsCount: 12,
+                gradient: 'from-babyblue-300/20 via-bordo-700 to-bordo-950',
+                genreFilter: 'MPB / Bossa Nova',
+                icon: 'fa-sun'
+            }
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        let isShuffle = false;
+        let isLoop = false;
+        let currentGenreFilter = 'Todos';
+        let favorites = JSON.parse(localStorage.getItem('vibebordo_favs') || '["1", "3"]');
+        let customPlaylists = JSON.parse(localStorage.getItem('vibebordo_playlists') || '[]');
+        let currentSection = 'discover';
+
+        // Web Audio API Synth Engine
+        let audioCtx = null;
+        let synthInterval = null;
+        let currentNoteIndex = 0;
+        let masterGain = null;
+
+        // Game State
+        let gameStep = 0;
+        let gameAnswers = [];
+        let generatedGamePlaylist = null;
+        let arcadeChordType = 'suave';
+        let arcadeScore = 0;
+
+        const GAME_QUESTIONS = [
+            {
+                title: '1. Qual iluminação e ambiente traduzem seu estado de espírito agora?',
+                options: [
+                    { label: 'Luz natural suave de manhã com café quente', icon: 'fa-mug-hot', vibe: 'suave' },
+                    { label: 'Penumbra elegante com luz de velas e tons vinho', icon: 'fa-wine-glass-empty', vibe: 'intenso' },
+                    { label: 'Luzes neon vibrantes e brisa de estrada', icon: 'fa-bolt', vibe: 'pop' },
+                    { label: 'Tarde ensolarada na praia com brisa leve', icon: 'fa-sun', vibe: 'suave' }
+                ]
+            },
+            {
+                title: '2. Que tipo de ritmo acelera os batimentos da sua mente?',
+                options: [
+                    { label: 'Batidas desaceleradas e suaves (Lo-Fi / Ambient)', icon: 'fa-cloud-moon', vibe: 'suave' },
+                    { label: 'Harmonias complexas, metais e piano de cauda', icon: 'fa-drum', vibe: 'intenso' },
+                    { label: 'Sintetizadores contagiantes e graves marcantes', icon: 'fa-wave-square', vibe: 'pop' },
+                    { label: 'Violão de nylon e ritmo cadenciado de bossa', icon: 'fa-guitar', vibe: 'suave' }
+                ]
+            },
+            {
+                title: '3. Se sua vida fosse um filme agora, qual seria a cena principal?',
+                options: [
+                    { label: 'Olhando a chuva pela janela com um livro', icon: 'fa-book-open', vibe: 'suave' },
+                    { label: 'Caminhando em um salão de arte com trajes elegantes', icon: 'fa-mask', vibe: 'intenso' },
+                    { label: 'Dirigindo à noite pela cidade iluminada', icon: 'fa-car', vibe: 'pop' },
+                    { label: 'Reunindo amigos próximos num jardim ao entardecer', icon: 'fa-users', vibe: 'suave' }
+                ]
+            },
+            {
+                title: '4. Escolha a palavra que melhor define sua busca musical:',
+                options: [
+                    { label: 'Paz e Acolhimento Azul Bebê', icon: 'fa-feather', vibe: 'suave' },
+                    { label: 'Profundidade e Paixão Bordô', icon: 'fa-heart', vibe: 'intenso' },
+                    { label: 'Energia e Criatividade Neon', icon: 'fa-sparkles', vibe: 'pop' },
+                    { label: 'Equilíbrio e Nostalgia', icon: 'fa-infinity', vibe: 'suave' }
+                ]
+            }
+        ];
+
+        window.onload = function() {
+            renderGenres();
+            renderSongs();
+            renderCuratedPlaylists();
+            updateFavoritesUI();
+            renderCustomPlaylists();
+            renderGameStep();
+            initVisualizer();
+        };
+
+        function initAudioEngine() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = parseFloat(document.getElementById('volumeSlider').value);
+                masterGain.connect(audioCtx.destination);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSynthesizedMelody(song) {
+            initAudioEngine();
+            if (synthInterval) clearInterval(synthInterval);
+
+            const freqs = song.noteFreqs || [261.63, 329.63, 392.00, 523.25];
+            const bpm = song.bpm || 80;
+            const intervalMs = (60 / bpm) * 1000;
+
+            currentNoteIndex = 0;
+
+            synthInterval = setInterval(() => {
+                if (!isPlaying || !audioCtx) return;
+
+                const osc = audioCtx.createOscillator();
+                const noteGain = audioCtx.createGain();
+
+                // Select synth wave type based on song vibe
+                if (song.vibe === 'intenso') {
+                    osc.type = 'sawtooth';
+                } else if (song.vibe === 'pop') {
+                    osc.type = 'square';
+                } else {
+                    osc.type = 'sine';
+                }
+
+                const freq = freqs[currentNoteIndex % freqs.length];
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                // Soft Envelope
+                noteGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                noteGain.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + 0.05);
+                noteGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (intervalMs / 1000) * 0.9);
+
+                osc.connect(noteGain);
+                noteGain.connect(masterGain);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + (intervalMs / 1000) * 0.9);
+
+                currentNoteIndex++;
+                updatePlayerProgressSimulated(song.duration);
+            }, intervalMs);
+        }
+
+        let songCurrentTime = 0;
+        let progressTimer = null;
+
+        function updatePlayerProgressSimulated(totalDuration) {
+            songCurrentTime += 1;
+            if (songCurrentTime > totalDuration) {
+                songCurrentTime = 0;
+                if (isLoop) {
+                    playSong(currentSongIndex);
+                } else {
+                    playNextTrack();
+                }
+            }
+            
+            const progressPercent = (songCurrentTime / totalDuration) * 100;
+            document.getElementById('playerProgressBar').style.width = `${progressPercent}%`;
+            document.getElementById('currentTimeDisplay').innerText = formatTime(songCurrentTime);
+            document.getElementById('durationDisplay').innerText = formatTime(totalDuration);
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function playSong(index) {
+            if (index < 0 || index >= SONGS_DATABASE.length) return;
+            currentSongIndex = index;
+            const song = SONGS_DATABASE[currentSongIndex];
+
+            songCurrentTime = 0;
+            isPlaying = true;
+
+            // Update Player UI
+            document.getElementById('playerTitle').innerText = song.title;
+            document.getElementById('playerArtist').innerText = song.artist + ' • ' + song.genre;
+            document.getElementById('playerCover').className = `w-full h-full bg-gradient-to-tr ${song.coverBg} rounded-[11px] flex items-center justify-center text-white font-bold text-lg overflow-hidden shadow-inner`;
+            document.getElementById('mainPlayBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+
+            // Check Favorite State
+            updatePlayerFavIcon();
+
+            // Start Audio Synth
+            playSynthesizedMelody(song);
+            showToast(`Tocando: ${song.title}`);
+        }
+
+        function togglePlayPause() {
+            if (!isPlaying) {
+                if (SONGS_DATABASE.length > 0) {
+                    isPlaying = true;
+                    document.getElementById('mainPlayBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    playSynthesizedMelody(SONGS_DATABASE[currentSongIndex]);
+                }
+            } else {
+                isPlaying = false;
+                document.getElementById('mainPlayBtn').innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+                if (synthInterval) clearInterval(synthInterval);
+            }
+        }
+
+        function playNextTrack() {
+            if (isShuffle) {
+                const randIndex = Math.floor(Math.random() * SONGS_DATABASE.length);
+                playSong(randIndex);
+            } else {
+                const nextIndex = (currentSongIndex + 1) % SONGS_DATABASE.length;
+                playSong(nextIndex);
+            }
+        }
+
+        function playPrevTrack() {
+            const prevIndex = (currentSongIndex - 1 + SONGS_DATABASE.length) % SONGS_DATABASE.length;
+            playSong(prevIndex);
+        }
+
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            const btn = document.getElementById('shuffleBtn');
+            btn.className = isShuffle ? 'text-babyblue-200 font-bold text-xs' : 'text-babyblue-200/50 hover:text-babyblue-200 text-xs';
+            showToast(isShuffle ? 'Modo Aleatório ativado' : 'Modo Aleatório desativado');
+        }
+
+        function toggleLoop() {
+            isLoop = !isLoop;
+            const btn = document.getElementById('loopBtn');
+            btn.className = isLoop ? 'text-babyblue-200 font-bold text-xs' : 'text-babyblue-200/50 hover:text-babyblue-200 text-xs';
+            showToast(isLoop ? 'Repetição ativada' : 'Repetição desativada');
+        }
+
+        function changeVolume(val) {
+            if (masterGain) {
+                masterGain.gain.value = parseFloat(val);
+            }
+            const icon = document.getElementById('volumeIcon');
+            if (val == 0) {
+                icon.className = 'fa-solid fa-volume-xmark text-xs text-babyblue-200/40';
+            } else if (val < 0.5) {
+                icon.className = 'fa-solid fa-volume-low text-xs text-babyblue-200/70';
+            } else {
+                icon.className = 'fa-solid fa-volume-high text-xs text-babyblue-200/70';
+            }
+        }
+
+        function playRandomFeatured() {
+            const rand = Math.floor(Math.random() * SONGS_DATABASE.length);
+            playSong(rand);
+        }
+
+        function initVisualizer() {
+            const canvas = document.getElementById('visualizerCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function renderFrame() {
+                requestAnimationFrame(renderFrame);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const bars = 7;
+                const barWidth = 6;
+                const gap = 3;
+
+                for (let i = 0; i < bars; i++) {
+                    let barHeight = isPlaying ? Math.random() * (canvas.height - 4) + 4 : 4;
+                    let x = i * (barWidth + gap) + 4;
+                    let y = canvas.height - barHeight;
+
+                    // Gradient for bars (Baby blue to burgundy)
+                    let grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                    grad.addColorStop(0, '#bae6fd');
+                    grad.addColorStop(1, '#9e1f37');
+
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(x, y, barWidth, barHeight);
+                }
+            }
+            renderFrame();
+        }
+
+        function renderGenres() {
+            const genres = ['Todos', 'Indie / Lo-Fi', 'Jazz Contemporâneo', 'MPB / Bossa Nova', 'Synthwave / Pop'];
+            const container = document.getElementById('genreFilters');
+            container.innerHTML = genres.map(g => `
+                <button onclick="filterGenre('${g}')" class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${currentGenreFilter === g ? 'bg-babyblue-100 text-bordo-950 shadow-md' : 'bg-bordo-900/80 text-babyblue-200/80 hover:bg-bordo-800 border border-babyblue-200/10'}">
+                    ${g}
+                </button>
+            `).join('');
+        }
+
+        function filterGenre(g) {
+            currentGenreFilter = g;
+            renderGenres();
+            renderSongs();
+        }
+
+        function renderSongs(searchQuery = '') {
+            const grid = document.getElementById('songGrid');
+            let filtered = SONGS_DATABASE;
+
+            if (currentGenreFilter !== 'Todos') {
+                filtered = filtered.filter(s => s.genre === currentGenreFilter);
+            }
+
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q) || s.genre.toLowerCase().includes(q));
+            }
+
+            document.getElementById('songCountDisplay').innerText = `${filtered.length} música(s) encontrada(s)`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 glass-panel rounded-2xl">
+                        <i class="fa-solid fa-compact-disc text-4xl text-babyblue-200/30 mb-2"></i>
+                        <p class="text-sm font-semibold text-babyblue-100/70">Nenhuma música encontrada para sua busca.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(song => {
+                const globalIdx = SONGS_DATABASE.findIndex(s => s.id === song.id);
+                const isFav = favorites.includes(song.id);
+                return `
+                    <div class="glass-card p-4 rounded-2xl flex flex-col justify-between space-y-3 group">
+                        <div class="relative w-full aspect-square rounded-xl bg-gradient-to-tr ${song.coverBg} flex items-center justify-center shadow-md overflow-hidden">
+                            <i class="fa-solid fa-music text-3xl text-white/40 group-hover:scale-110 transition-transform"></i>
+                            <button onclick="playSong(${globalIdx})" class="absolute inset-0 bg-bordo-950/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <div class="w-12 h-12 rounded-full btn-babyblue flex items-center justify-center text-bordo-950 shadow-xl transform group-hover:scale-105 transition-transform">
+                                    <i class="fa-solid fa-play text-lg ml-0.5"></i>
+                                </div>
+                            </button>
+                            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-bordo-950/70 text-babyblue-200 text-[10px] font-bold border border-babyblue-200/20">
+                                ${formatTime(song.duration)}
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex items-start justify-between gap-2">
+                                <h4 class="font-bold text-sm text-babyblue-100 line-clamp-1 hover:text-babyblue-300 transition-colors cursor-pointer" onclick="playSong(${globalIdx})">${song.title}</h4>
+                                <button onclick="toggleFavorite('${song.id}')" class="${isFav ? 'text-bordo-400' : 'text-babyblue-200/40 hover:text-babyblue-200'} transition-colors">
+                                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                                </button>
+                            </div>
+                            <p class="text-xs text-babyblue-200/60 line-clamp-1">${song.artist}</p>
+                            <span class="inline-block text-[10px] font-bold text-babyblue-300/80 bg-bordo-900/60 px-2 py-0.5 rounded-full border border-babyblue-200/10">${song.genre}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCuratedPlaylists() {
+            const container = document.getElementById('curatedPlaylistsHome');
+            const containerAll = document.getElementById('allPlaylistsGrid');
+
+            const html = CURATED_PLAYLISTS.map(p => `
+                <div class="glass-card p-6 rounded-2xl bg-gradient-to-br ${p.gradient} space-y-4 border border-babyblue-200/20 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="w-12 h-12 rounded-2xl bg-babyblue-100/10 border border-babyblue-200/30 flex items-center justify-center text-babyblue-200 text-xl">
+                            <i class="fa-solid ${p.icon}"></i>
+                        </div>
+                        <h4 class="font-display font-extrabold text-lg text-white">${p.title}</h4>
+                        <p class="text-xs text-babyblue-100/70 leading-relaxed">${p.desc}</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-babyblue-200/10">
+                        <span class="text-[11px] font-bold text-babyblue-200/80">${p.songsCount} Músicas</span>
+                        <button onclick="playCuratedPlaylist('${p.genreFilter}')" class="btn-babyblue px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                            <i class="fa-solid fa-play"></i> Ouvir
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+            containerAll.innerHTML = html;
+        }
+
+        function playCuratedPlaylist(genre) {
+            currentGenreFilter = genre;
+            renderGenres();
+            renderSongs();
+            showSection('discover');
+            const matchingIndex = SONGS_DATABASE.findIndex(s => s.genre === genre);
+            if (matchingIndex !== -1) playSong(matchingIndex);
+        }
+
+        function playAllFiltered() {
+            if (SONGS_DATABASE.length > 0) playSong(0);
+        }
+
+        function showSection(sec) {
+            currentSection = sec;
+            ['discover', 'playlists', 'game', 'library'].forEach(s => {
+                document.getElementById(`section-${s}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${s}`);
+                if (navBtn) {
+                    if (s === sec) {
+                        navBtn.classList.add('bg-bordo-800', 'text-white');
+                        navBtn.classList.remove('text-babyblue-200/70');
+                    } else {
+                        navBtn.classList.remove('bg-bordo-800', 'text-white');
+                        navBtn.classList.add('text-babyblue-200/70');
+                    }
+                }
+            });
+            document.getElementById(`section-${sec}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleSearch(val) {
+            showSection('discover');
+            renderSongs(val);
+        }
+
+        function toggleFavorite(id) {
+            const idx = favorites.indexOf(id);
+            if (idx === -1) {
+                favorites.push(id);
+                showToast('Música adicionada às Favoritas!');
+            } else {
+                favorites.splice(idx, 1);
+                showToast('Música removida das Favoritas.');
+            }
+            localStorage.setItem('vibebordo_favs', JSON.stringify(favorites));
+            renderSongs();
+            updateFavoritesUI();
+            updatePlayerFavIcon();
+        }
+
+        function toggleCurrentFavorite() {
+            const currentSong = SONGS_DATABASE[currentSongIndex];
+            if (currentSong) toggleFavorite(currentSong.id);
+        }
+
+        function updatePlayerFavIcon() {
+            const currentSong = SONGS_DATABASE[currentSongIndex];
+            const btn = document.getElementById('playerFavBtn');
+            if (currentSong && favorites.includes(currentSong.id)) {
+                btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                btn.className = 'text-bordo-400 text-base transition-colors px-1';
+            } else {
+                btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                btn.className = 'text-babyblue-200/40 hover:text-babyblue-200 text-base transition-colors px-1';
+            }
+        }
+
+        function updateFavoritesUI() {
+            document.getElementById('favCount').innerText = favorites.length;
+            const list = document.getElementById('favoritesList');
+            const favSongs = SONGS_DATABASE.filter(s => favorites.includes(s.id));
+
+            if (favSongs.length === 0) {
+                list.innerHTML = `
+                    <div class="col-span-full py-12 text-center glass-panel rounded-2xl space-y-2">
+                        <i class="fa-regular fa-heart text-4xl text-bordo-400/50"></i>
+                        <p class="text-sm font-semibold text-babyblue-100/70">Sua lista de favoritas está vazia.</p>
+                        <button onclick="showSection('discover')" class="btn-babyblue px-4 py-2 rounded-xl text-xs font-bold inline-block">Explorar Músicas</button>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = favSongs.map(song => {
+                const globalIdx = SONGS_DATABASE.findIndex(s => s.id === song.id);
+                return `
+                    <div class="glass-card p-3 rounded-xl flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-tr ${song.coverBg} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-xs text-babyblue-100">${song.title}</h5>
+                                <p class="text-[10px] text-babyblue-200/60">${song.artist}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="playSong(${globalIdx})" class="w-8 h-8 rounded-full btn-babyblue flex items-center justify-center text-bordo-950 text-xs">
+                                <i class="fa-solid fa-play"></i>
+                            </button>
+                            <button onclick="toggleFavorite('${song.id}')" class="text-bordo-400 p-1">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchLibTab(tab) {
+            if (tab === 'favs') {
+                document.getElementById('libTabFavs').classList.remove('hidden');
+                document.getElementById('libTabPlaylists').classList.add('hidden');
+                document.getElementById('tab-btn-favs').className = 'px-4 py-2 rounded-xl bg-babyblue-100 text-bordo-950 font-bold text-xs shadow-md';
+                document.getElementById('tab-btn-customPlaylists').className = 'px-4 py-2 rounded-xl text-babyblue-200/70 hover:text-white font-bold text-xs';
+            } else {
+                document.getElementById('libTabFavs').classList.add('hidden');
+                document.getElementById('libTabPlaylists').classList.remove('hidden');
+                document.getElementById('tab-btn-customPlaylists').className = 'px-4 py-2 rounded-xl bg-babyblue-100 text-bordo-950 font-bold text-xs shadow-md';
+                document.getElementById('tab-btn-favs').className = 'px-4 py-2 rounded-xl text-babyblue-200/70 hover:text-white font-bold text-xs';
+            }
+        }
+
+        function openCreatePlaylistModal() {
+            document.getElementById('createPlaylistModal').classList.remove('hidden');
+            document.getElementById('createPlaylistModal').classList.add('flex');
+        }
+
+        function closeCreatePlaylistModal() {
+            document.getElementById('createPlaylistModal').classList.add('hidden');
+            document.getElementById('createPlaylistModal').classList.remove('flex');
+        }
+
+        function saveNewPlaylist() {
+            const name = document.getElementById('newPlaylistName').value.trim();
+            const desc = document.getElementById('newPlaylistDesc').value.trim();
+
+            if (!name) {
+                showToast('Por favor, informe um nome para a playlist!');
+                return;
+            }
+
+            const newP = {
+                id: 'custom_' + Date.now(),
+                title: name,
+                desc: desc || 'Playlist personalizada VibeBordô.',
+                songsCount: Math.floor(Math.random() * 5) + 3,
+                gradient: 'from-bordo-900 to-babyblue-900',
+                icon: 'fa-compact-disc'
+            };
+
+            customPlaylists.push(newP);
+            localStorage.setItem('vibebordo_playlists', JSON.stringify(customPlaylists));
+            renderCustomPlaylists();
+            closeCreatePlaylistModal();
+            showToast('Playlist criada com sucesso!');
+        }
+
+        function renderCustomPlaylists() {
+            const container = document.getElementById('userCustomPlaylistsGrid');
+            if (customPlaylists.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center glass-panel rounded-2xl space-y-2">
+                        <i class="fa-solid fa-list-check text-4xl text-babyblue-200/30"></i>
+                        <p class="text-sm font-semibold text-babyblue-100/70">Você ainda não criou nenhuma playlist personalizada.</p>
+                        <button onclick="openCreatePlaylistModal()" class="btn-babyblue px-4 py-2 rounded-xl text-xs font-bold inline-block">Criar Minha Primeiras Playlist</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = customPlaylists.map(p => `
+                <div class="glass-card p-5 rounded-2xl space-y-3 border border-babyblue-200/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-bordo-800 border border-babyblue-200/30 flex items-center justify-center text-babyblue-200">
+                            <i class="fa-solid ${p.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-white">${p.title}</h4>
+                            <p class="text-[11px] text-babyblue-200/60">${p.songsCount} Músicas</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-babyblue-100/70">${p.desc}</p>
+                    <div class="flex justify-end pt-2 border-t border-babyblue-200/10">
+                        <button onclick="playRandomFeatured()" class="btn-babyblue px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-play"></i> Tocar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderGameStep() {
+            const q = GAME_QUESTIONS[gameStep];
+            document.getElementById('gameStepTitle').innerText = q.title;
+            document.getElementById('gameStepIndicator').innerText = `Passo ${gameStep + 1} de ${GAME_QUESTIONS.length}`;
+            document.getElementById('gameProgressBar').style.width = `${((gameStep + 1) / GAME_QUESTIONS.length) * 100}%`;
+
+            document.getElementById('gamePrevBtn').disabled = gameStep === 0;
+
+            const grid = document.getElementById('gameOptionsGrid');
+            grid.innerHTML = q.options.map((opt, i) => `
+                <button onclick="selectGameOption('${opt.vibe}')" class="glass-card p-5 rounded-2xl flex items-center gap-4 text-left border border-babyblue-200/20 hover:border-babyblue-200 hover:scale-[1.02] transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-bordo-900 border border-babyblue-200/30 flex items-center justify-center text-babyblue-200 group-hover:bg-babyblue-200 group-hover:text-bordo-950 transition-colors text-xl flex-shrink-0">
+                        <i class="fa-solid ${opt.icon}"></i>
+                    </div>
+                    <span class="font-semibold text-sm text-babyblue-100 group-hover:text-white">${opt.label}</span>
+                </button>
+            `).join('');
+        }
+
+        function selectGameOption(vibe) {
+            gameAnswers[gameStep] = vibe;
+            if (gameStep < GAME_QUESTIONS.length - 1) {
+                gameStep++;
+                renderGameStep();
+            } else {
+                calculateGameResults();
+            }
+        }
+
+        function gamePreviousStep() {
+            if (gameStep > 0) {
+                gameStep--;
+                renderGameStep();
+            }
+        }
+
+        function calculateGameResults() {
+            document.getElementById('gameWizard').classList.add('hidden');
+            document.getElementById('gameResultContainer').classList.remove('hidden');
+
+            // Count dominant vibe
+            const counts = { suave: 0, intenso: 0, pop: 0 };
+            gameAnswers.forEach(a => { if(counts[a] !== undefined) counts[a]++; });
+
+            let dominant = 'suave';
+            if (counts.intenso > counts.suave && counts.intenso >= counts.pop) dominant = 'intenso';
+            if (counts.pop > counts.suave && counts.pop > counts.intenso) dominant = 'pop';
+
+            let title = 'Sonhador Neon Azul Bebê';
+            let desc = 'Você tem uma sensibilidade refinada para harmonias suaves, ambientações lo-fi e letras que confortam a alma.';
+            let icon = 'fa-cloud-moon';
+
+            if (dominant === 'intenso') {
+                title = 'Alquimista do Bordô Profundo';
+                desc = 'Seu gosto musical busca intensidade dramática, solos de jazz marcantes e arranjos ricos cheios de textura e paixão.';
+                icon = 'fa-wine-glass';
+            } else if (dominant === 'pop') {
+                title = 'Explorador da Vibe Synthwave';
+                desc = 'Você ama batidas energéticas, graves pulsantes e melodias sintetizadas que elevam o ânimo instantaneamente!';
+                icon = 'fa-bolt';
+            }
+
+            document.getElementById('resultTitle').innerText = title;
+            document.getElementById('resultDescription').innerText = desc;
+            document.getElementById('resultIcon').className = `fa-solid ${icon} text-babyblue-200 text-3xl mb-1`;
+
+            // Filter songs based on vibe match
+            const recommended = SONGS_DATABASE.filter(s => s.vibe === dominant || dominant === 'suave');
+            generatedGamePlaylist = recommended;
+
+            const recList = document.getElementById('gameRecommendedList');
+            recList.innerHTML = recommended.map(song => {
+                const globalIdx = SONGS_DATABASE.findIndex(s => s.id === song.id);
+                return `
+                    <div class="glass-card p-3 rounded-xl flex items-center justify-between gap-3 border border-babyblue-200/20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-tr ${song.coverBg} flex items-center justify-center text-white font-bold text-xs">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-xs text-babyblue-100">${song.title}</h5>
+                                <p class="text-[10px] text-babyblue-200/60">${song.artist}</p>
+                            </div>
+                        </div>
+                        <button onclick="playSong(${globalIdx})" class="w-8 h-8 rounded-full btn-babyblue flex items-center justify-center text-bordo-950 text-xs">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function playAllGameRecommendations() {
+            if (generatedGamePlaylist && generatedGamePlaylist.length > 0) {
+                const globalIdx = SONGS_DATABASE.findIndex(s => s.id === generatedGamePlaylist[0].id);
+                if (globalIdx !== -1) playSong(globalIdx);
+            }
+        }
+
+        function resetGame() {
+            gameStep = 0;
+            gameAnswers = [];
+            document.getElementById('gameWizard').classList.remove('hidden');
+            document.getElementById('gameResultContainer').classList.add('hidden');
+            renderGameStep();
+        }
+
+        function saveGamePlaylist() {
+            const newP = {
+                id: 'game_' + Date.now(),
+                title: 'Playlist Recomendada: ' + document.getElementById('resultTitle').innerText,
+                desc: document.getElementById('resultDescription').innerText,
+                songsCount: generatedGamePlaylist ? generatedGamePlaylist.length : 4,
+                gradient: 'from-babyblue-300 via-bordo-800 to-bordo-950',
+                icon: 'fa-wand-magic-sparkles'
+            };
+            customPlaylists.push(newP);
+            localStorage.setItem('vibebordo_playlists', JSON.stringify(customPlaylists));
+            renderCustomPlaylists();
+            showToast('Playlist do Match salva em suas Playlists!');
+        }
+
+        function playArcadeChord() {
+            initAudioEngine();
+            const types = ['suave', 'intenso', 'pop'];
+            arcadeChordType = types[Math.floor(Math.random() * types.length)];
+
+            let freqs = [261.63, 329.63, 392.00]; // Suave
+            if (arcadeChordType === 'intenso') freqs = [220.00, 261.63, 311.13];
+            if (arcadeChordType === 'pop') freqs = [174.61, 220.00, 261.63];
+
+            freqs.forEach((f, idx) => {
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+                osc.connect(g);
+                g.connect(masterGain);
+                osc.start(audioCtx.currentTime + idx * 0.05);
+                osc.stop(audioCtx.currentTime + 1.2);
+            });
+
+            document.getElementById('arcadeFeedback').innerText = 'Ouça atentamente... Escolha a vibe correspondente!';
+            document.getElementById('arcadeFeedback').className = 'text-center text-xs font-bold text-babyblue-200';
+        }
+
+        function guessArcade(guess) {
+            const feedback = document.getElementById('arcadeFeedback');
+            if (guess === arcadeChordType) {
+                arcadeScore += 10;
+                document.getElementById('arcadeScore').innerText = arcadeScore;
+                feedback.innerText = '✨ Excelente! Você acertou a sintonia do acorde!';
+                feedback.className = 'text-center text-xs font-bold text-green-400';
+            } else {
+                feedback.innerText = '❌ Ops! Tente novamente ou aperte para tocar o acorde de novo.';
+                feedback.className = 'text-center text-xs font-bold text-bordo-400';
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-[-100px]', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
